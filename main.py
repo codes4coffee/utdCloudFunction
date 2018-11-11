@@ -2,7 +2,7 @@ from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 from flask import Response
 import json
-pageToScrape = 'https://www.utdallas.edu/shop/parking/_code.php'
+pageToScrape = 'https://www.utdallas.edu/services/transit/garages/_code.php'
 page = urlopen(Request(pageToScrape, headers={'User-Agent': 'Mozilla'}))
 soup = BeautifulSoup(page, 'html.parser')
 parkingStructures = ['Parking Structure 1', 'Parking Structure 3', 'Parking Structure 4']
@@ -18,6 +18,7 @@ def getParkingSpaces(request):
             if hasattr(child,'attrs'):
 
                 color = str(child.td.next_sibling.next_sibling)[11:] #Get the permit type of the space and strip out the type from the html tag
+                print(color)
                 level = str(child.td)[19:]
                 color = color[:color.find('"')]
                 level = level[:level.find('<')]
