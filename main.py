@@ -32,3 +32,5 @@ def getParkingSpaces(request):
         finalList.append(jsonObj)
         resp = Response(json.dumps(finalList), mimetype='application/json')
     return resp
+
+print(getParkingSpaces("Test"))
