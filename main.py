@@ -2,22 +2,30 @@ from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 from flask import Response
 import json
-pageToScrape = 'https://www.utdallas.edu/services/transit/garages/_code.php'
-page = urlopen(Request(pageToScrape, headers={'User-Agent': 'Mozilla'}))
-soup = BeautifulSoup(page, 'html.parser')
+import os
+
+print (os.environ['TESTING'])
+if os.environ['TESTING'] == 'true':
+    soup = BeautifulSoup(open('testPage.html'), 'html.parser')
+else:
+    page = urlopen(Request('https://www.utdallas.edu/services/transit/garages/_code.php',
+                           headers={'User-Agent': 'Mozilla'}))
+    soup = BeautifulSoup(page, 'html.parser')
+
 parkingStructures = ['Parking Structure 1', 'Parking Structure 3', 'Parking Structure 4']
 
 def getParkingSpaces(request):
-    finalList = []
-    #List the amount of spots for every parking structure 1 - 4
+    final_list = []
+    # List the amount of spots for every parking structure 1 - 4
     for structure in parkingStructures:
         jsonObj = {'structure': structure}
         parkingTable = soup.find('table', attrs={'summary':structure})
-        tableData = parkingTable.tbody # the sub-table for a single parking structure
+        tableData = parkingTable.tbody  # the sub-table for a single parking structure
         for child in tableData:
-            if hasattr(child,'attrs'):
+            if hasattr(child, 'attrs'):
 
-                color = str(child.td.next_sibling.next_sibling)[11:] #Get the permit type of the space and strip out the type from the html tag
+                # Get the permit type of the space and strip out the type from the html tag
+                color = str(child.td.next_sibling.next_sibling)[11:]
                 print(color)
                 level = str(child.td)[19:]
                 color = color[:color.find('"')]
@@ -29,8 +37,8 @@ def getParkingSpaces(request):
                     jsonObj[color] = 0
                 else:
                     jsonObj[color] = int(numSpace)
-        finalList.append(jsonObj)
-        resp = Response(json.dumps(finalList), mimetype='application/json')
+        final_list.append(jsonObj)
+        resp = Response(json.dumps(final_list), mimetype='application/json')
     return resp
 
-print(getParkingSpaces("Test"))
+print(getParkingSpaces("Test").get_data())
