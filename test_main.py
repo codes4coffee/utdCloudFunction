@@ -7,5 +7,6 @@ master_hash = hashlib.md5(str.encode('[{"structure": "Parking Structure 1", "par
 def test_getParkingSpaces():
     resp = main.getParkingSpaces("Test")
     body = resp.get_data()
+    print (body)
     test_hash = hashlib.md5(body).hexdigest()
     assert test_hash == master_hash.hexdigest()
