@@ -28,6 +28,7 @@ def getParkingSpaces(request):
 
         if parkingTable is None:
             jsonObj['hasInfo'] = False # Needed to add this in because sometimes all the garage info isn't available
+            finalList.append(jsonObj)
             continue;
 
         tableData = parkingTable.tbody # The sub-table for a single parking structure
